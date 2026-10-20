@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.Comparator;
 
 public class App {
     Scanner sc = new Scanner(System.in);
@@ -61,9 +63,9 @@ public class App {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
 
-        for (int i = wiseList.size()-1; i >= 0; i--) {
-            System.out.println(wiseList.get(i).toListString());
-        }
+        wiseList.stream()
+                .sorted(Comparator.comparingInt(WiseSaying::getId).reversed())
+                .forEach(e-> System.out.println(e.toListString()));
     }
 
     private int extractId(String cmd) {
@@ -84,16 +86,11 @@ public class App {
     }
 
     private WiseSaying findById(int id) {
-        WiseSaying item = null;
+        Optional<WiseSaying> opWise = wiseList.stream()
+                .filter(e -> e.getId() == id)
+                .findFirst();
 
-        for(WiseSaying wise : wiseList) {
-            if(wise.getId() == id) {
-                item = wise;
-                break;
-            }
-        }
-
-        return item;
+        return opWise.orElse(null);
     }
 
     private void delete(WiseSaying item) {
@@ -112,8 +109,8 @@ public class App {
         System.out.printf("명언 : ");
         String content = sc.nextLine();
 
-        System.out.println("작자(기존) : " + item.getAuthor());
-        System.out.printf("작자 : ");
+        System.out.println("작가(기존) : " + item.getAuthor());
+        System.out.printf("작가 : ");
         String author = sc.nextLine();
 
         edit(item, author, content);
