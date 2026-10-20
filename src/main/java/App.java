@@ -1,10 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
     Scanner sc = new Scanner(System.in);
     boolean isEnd = false;
     int lastId = 1;
-    WiseSaying[] wiseArr = new WiseSaying[100];
+    List<WiseSaying> wiseList = new ArrayList<>();
 
     void run() {
         System.out.println("== 명언 앱 ==");
@@ -50,7 +52,7 @@ public class App {
         int id = lastId++;
         WiseSaying item = new WiseSaying(id, author, content);
 
-        wiseArr[id - 1] = item;
+        wiseList.add(item);
 
         return item;
     }
@@ -59,10 +61,8 @@ public class App {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
 
-        for (int i = lastId - 2; i >= 0; i--) {
-            if (wiseArr[i] == null) continue;
-
-            System.out.println(wiseArr[i].toListString());
+        for (int i = wiseList.size()-1; i >= 0; i--) {
+            System.out.println(wiseList.get(i).toListString());
         }
     }
 
@@ -73,29 +73,40 @@ public class App {
     }
 
     private void actionDelete(int id) {
-        int idx = id - 1;
+        WiseSaying item = findById(id);
 
-        if (wiseArr[idx] == null) {
+        if (item == null) {
             System.out.println(id + "번 명언은 존재하지 않습니다.");
             return;
         }
-        delete(idx);
+        delete(item);
         System.out.println(id + "번 명언이 삭제되었습니다.");
     }
 
-    private void delete(int idx) {
-        wiseArr[idx] = null;
+    private WiseSaying findById(int id) {
+        WiseSaying item = null;
+
+        for(WiseSaying wise : wiseList) {
+            if(wise.getId() == id) {
+                item = wise;
+                break;
+            }
+        }
+
+        return item;
+    }
+
+    private void delete(WiseSaying item) {
+        wiseList.remove(item);
     }
 
     private void actionEdit(int id) {
-        int idx = id - 1;
+        WiseSaying item = findById(id);
 
-        if (wiseArr[idx] == null) {
+        if (item == null) {
             System.out.println(id + "번 명언은 존재하지 않습니다.");
             return;
         }
-
-        WiseSaying item = wiseArr[idx];
 
         System.out.println("명언(기존) : " + item.getContent());
         System.out.printf("명언 : ");
@@ -105,10 +116,11 @@ public class App {
         System.out.printf("작자 : ");
         String author = sc.nextLine();
 
-        edit(idx, id, author, content);
+        edit(item, author, content);
     }
 
-    private void edit(int idx, int id, String author, String content) {
-        wiseArr[idx] = new WiseSaying(id, author, content);
+    private void edit(WiseSaying item, String author, String content) {
+        item.setAuthor(author);
+        item.setContent(content);
     }
 }
