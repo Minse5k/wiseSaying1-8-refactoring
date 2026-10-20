@@ -65,7 +65,7 @@ public class App {
 
         wiseList.stream()
                 .sorted(Comparator.comparingInt(WiseSaying::getId).reversed())
-                .forEach(e-> System.out.println(e.toListString()));
+                .forEach(e -> System.out.println(e.toListString()));
     }
 
     private int extractId(String cmd) {
@@ -75,14 +75,9 @@ public class App {
     }
 
     private void actionDelete(int id) {
-        WiseSaying item = findById(id);
+        boolean isDelete = wiseList.removeIf(e -> e.getId() == id);
 
-        if (item == null) {
-            System.out.println(id + "번 명언은 존재하지 않습니다.");
-            return;
-        }
-        delete(item);
-        System.out.println(id + "번 명언이 삭제되었습니다.");
+        System.out.println(id + "번 명언" + (isDelete ? "이 삭제되었습니다." : "은 존재하지 않습니다."));
     }
 
     private WiseSaying findById(int id) {
@@ -91,10 +86,6 @@ public class App {
                 .findFirst();
 
         return opWise.orElse(null);
-    }
-
-    private void delete(WiseSaying item) {
-        wiseList.remove(item);
     }
 
     private void actionEdit(int id) {
