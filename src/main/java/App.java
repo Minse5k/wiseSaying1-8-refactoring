@@ -19,21 +19,11 @@ public class App {
             String cmd = rq.getActionName();
 
             switch (cmd) {
-                case "종료":
-                    isEnd = true;
-                    break;
-                case "등록":
-                    actionRegister();
-                    break;
-                case "목록":
-                    actionList();
-                    break;
-                case "삭제":
-                    actionDelete(rq);
-                    break;
-                case "수정":
-                    actionEdit(rq);
-                    break;
+                case "종료" -> isEnd = true;
+                case "등록" -> actionRegister();
+                case "목록" -> actionList();
+                case "삭제" -> actionDelete(rq);
+                case "수정" -> actionEdit(rq);
             }
         }
     }
