@@ -1,3 +1,4 @@
+import java.lang.invoke.StringConcatException;
 import java.util.HashMap;
 
 public class Rq {
@@ -12,14 +13,14 @@ public class Rq {
 
         String[] query = str.split("&");
 
-        System.out.println("part0 : " + parts[0] + " parts1 : " + parts[1]);
-
         for(String param : query) {
+            if(param.isEmpty()) continue;
+
             String[] paramUnit = param.split("=", 2);
 
             String key = paramUnit[0];
             String value = paramUnit.length == 2 ? paramUnit[1] : "";
-            System.out.println("key : " + key + " value : " + value);
+
             paramsMap.put(key, value);
         }
     }
@@ -29,24 +30,16 @@ public class Rq {
     }
 
     public int getParamAsInt(String key, int n) {
-        String value = paramsMap.get(key);
-
-        if(value == null || value.isEmpty() || value.matches("[0-9]+")) {
-            return -1;
+        try {
+            String value = paramsMap.get(key);
+            return Integer.parseInt(value);
+        } catch(NumberFormatException e) {
+            return n;
         }
-
-        return Integer.parseInt(value);
     }
 
-    public String getParam(String key, String str2) {
-        String value = paramsMap.get(key);
-
-        if(value == null || value.isEmpty()) {
-            return str2;
-        }
-
-        return value;
+    public String getParam(String key, String str) {
+        return paramsMap.getOrDefault(key, str);
     }
-
 }
 

@@ -1,5 +1,5 @@
 public class WiseSaying {
-    private int id;
+    final private int id;
     private String author;
     private String content;
 

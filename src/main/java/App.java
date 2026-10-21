@@ -15,8 +15,8 @@ public class App {
 
         while (!isEnd) {
             System.out.print("명령) ");
-            String[] parts = sc.nextLine().split("\\?");
-            String cmd = parts[0];
+            Rq rq = new Rq(sc.nextLine().trim());
+            String cmd = rq.getActionName();
 
             switch (cmd) {
                 case "종료":
@@ -29,10 +29,10 @@ public class App {
                     actionList();
                     break;
                 case "삭제":
-                    actionDelete(extractId(parts[1]));
+                    actionDelete(rq);
                     break;
                 case "수정":
-                    actionEdit(extractId(parts[1]));
+                    actionEdit(rq);
                     break;
             }
         }
@@ -68,13 +68,9 @@ public class App {
                 .forEach(e -> System.out.println(e.toListString()));
     }
 
-    private int extractId(String cmd) {
-        String[] parts = cmd.split("=");
+    private void actionDelete(Rq rq) {
+        int id = rq.getParamAsInt("id", -1);
 
-        return Integer.parseInt(parts[1]);
-    }
-
-    private void actionDelete(int id) {
         boolean isDelete = wiseList.removeIf(e -> e.getId() == id);
 
         System.out.println(id + "번 명언" + (isDelete ? "이 삭제되었습니다." : "은 존재하지 않습니다."));
@@ -88,7 +84,9 @@ public class App {
         return opWise.orElse(null);
     }
 
-    private void actionEdit(int id) {
+    private void actionEdit(Rq rq) {
+        int id = rq.getParamAsInt("id", -1);
+
         WiseSaying item = findById(id);
 
         if (item == null) {
